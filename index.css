@@ -953,6 +953,15 @@ summary.getstarted-btn .arrow {
     height: 44px;
   }
 }
+/* ===== MOBILE HERO HEIGHT FIX ===== */
+@media (max-width: 768px) {
+  .hero,
+  .hero-section {
+    min-height: auto;
+    padding: 80px 16px 60px;
+  }
+}
+
 
 /* --- FIX: Footer spacing on small screens --- */
 @media (max-width: 480px) {
