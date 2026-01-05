@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* ===== Reset ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f6f8;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* ===== Login Box ===== */
+    .login-box {
+      background: #ffffff;
+      padding: 30px 25px;
+      width: 100%;
+      max-width: 360px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #333;
+    }
+
+    .role-label {
+      font-size: 13px;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: border 0.3s;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #019231;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px 0;
+      background: #019231;
+      border: none;
+      color: white;
+      font-size: 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #076920;
+    }
+
+    .signup-text {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .signup-text a {
+      color: #019231;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .signup-text a:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Remove number input arrows */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .login-box {
+        padding: 20px 15px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      select,
+      input {
+        font-size: 13px;
+        padding: 9px 10px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px 0;
+      }
+
+      .signup-text {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-box">
+    <h2>Login</h2>
+
+    <label class="role-label">Select Role</label>
+    <select id="role" onchange="toggleSignup()">
+      <option>Select Role</option>
+      <option value="user">User</option>
+      <option value="doctor">Doctor</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <button onclick="login()">Login</button>
+
+    <!-- Signup only for USER -->
+    <p class="signup-text" id="signupText">
+      Don’t have an account?
+      <a href="signup.html">Sign up</a>
+    </p>
+  </div>
+
+  <script>
+    function toggleSignup() {
+      const role = document.getElementById("role").value;
+      const signupText = document.getElementById("signupText");
+      signupText.classList.toggle("hidden", role === "doctor" || role === "admin");
+    }
+
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+
+      if (role === "Select Role") {
+        alert("Please select a role");
+        return;
+      }
+
+      if (!email || !password) {
+        alert("Please enter email and password");
+        return;
+      }
+
+      const url =
+        role === "admin"
+          ? "http://localhost:5000/api/admin/login"
+          : role === "doctor"
+          ? "http://localhost:5000/api/doctor/login"
+          : "http://localhost:5000/api/user/login";
+
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.message || "Login failed");
+          return;
+        }
+
+        localStorage.setItem("email", email);
+        localStorage.setItem("role", role);
+
+        if (role === "admin") {
+          window.location.href = "admin_dashboard.html";
+        } else if (role === "doctor") {
+          window.location.href = "doctordashboard.html";
+        } else {
+          window.location.href = "patient_dashboard.html";
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Server error");
+      }
+    }
+  </script>
+</body>
+</html>
