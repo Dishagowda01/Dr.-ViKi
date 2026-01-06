@@ -20,16 +20,18 @@ body{
 
 /* ================= HEADER ================= */
 .header{
-  padding:16px 20px;
+  height:72px;                 /* FIXED HEADER HEIGHT */
+  padding:0 24px;              /* horizontal padding only */
   display:flex;
   justify-content:space-between;
   align-items:center;
   background:#ffffff;
   box-shadow:0 2px 8px rgba(0,0,0,0.05);
-  position: sticky;
+  position:sticky;
   top:0;
   z-index:1000;
 }
+
 
 .left-icons{
   display:flex;
@@ -44,8 +46,10 @@ body{
 }
 
 .right-logo img{
-  height:34px;
+  height:100px;      /* BIG LOGO */
+  object-fit:contain;
 }
+
 
 /* ================= DASHBOARD LAYOUT ================= */
 .dashboard{
@@ -173,7 +177,7 @@ body{
 
   <!-- LOGO -->
   <div class="right-logo">
-    <img src="images/logo.jpeg" alt="Logo">
+    <img src="images/clogo.png" alt="Logo">
   </div>
 
   <!-- ICONS -->
