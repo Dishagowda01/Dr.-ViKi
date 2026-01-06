@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="index.css">
-
 </head>
 
 <body>
@@ -18,32 +17,51 @@
 <!-- ================= NAVBAR ================= -->
 <header class="navbar">
   <div class="container nav-container">
+
+    <!-- LOGO -->
     <img src="./clogo.png" alt="Logo" class="nav-logo">
+
+    <!-- HAMBURGER (MOBILE) -->
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
 
+    <!-- NAV LINKS (MOBILE + DESKTOP LINKS) -->
     <nav class="nav-links" id="navLinks">
-
       <a href="#hero">Home</a>
       <a href="#features-wrapper">Solution</a>
       <a href="#user-types">Features</a>
       <a href="#footer">About</a>
+
+      <!-- MOBILE-ONLY BUTTONS -->
+      <div class="mobile-only">
+        <a href="login.html" class="signin-btn">Sign In</a>
+
+        <details class="dropdown">
+          <summary class="getstarted-btn">
+            Get Started <span class="arrow">▾</span>
+          </summary>
+          <div class="dropdown-card">
+            <a href="doctor_registration.html">As a Practitioner</a>
+            <a href="javascript:void(0);" onclick="verifyOTP()">Seeking Consultation</a>
+          </div>
+        </details>
+      </div>
     </nav>
 
-    <div class="nav-buttons">
+    <!-- DESKTOP-ONLY BUTTONS -->
+    <div class="nav-buttons desktop-only">
       <a href="login.html" class="signin-btn">Sign In</a>
 
       <details class="dropdown">
         <summary class="getstarted-btn">
-          Get Started
-          <span class="arrow">▾</span>
+          Get Started <span class="arrow">▾</span>
         </summary>
-
         <div class="dropdown-card">
           <a href="doctor_registration.html">As a Practitioner</a>
-         <a href="javascript:void(0);" id="seekingConsult" onclick="verifyOTP()">Seeking Consultation</a>
+          <a href="javascript:void(0);" onclick="verifyOTP()">Seeking Consultation</a>
         </div>
       </details>
     </div>
+
   </div>
 </header>
 
@@ -69,12 +87,11 @@
 
         <div class="dropdown-card">
           <a href="doctor_registration.html">As a Practitioner</a>
-         <a href="javascript:void(0);" id="seekingConsult" onclick="verifyOTP()">Seeking Consultation</a>
+          <a href="javascript:void(0);" id="seekingConsult" onclick="verifyOTP()">Seeking Consultation</a>
         </div>
       </details>
 
-     <a href="#" class="getstarted-btn watch-demo-btn">Watch Demo</a>
-
+      <a href="#" class="getstarted-btn watch-demo-btn">Watch Demo</a>
     </div>
   </div>
 </section>
@@ -178,8 +195,7 @@
         </div>
       </details>
 
-     <a href="#" class="getstarted-btn">Contact Sales</a>
-
+      <a href="#" class="getstarted-btn">Contact Sales</a>
     </div>
   </div>
 </section>
@@ -191,14 +207,12 @@
       <img src="./clogo.png" class="logo" alt="Dr. ViKi">
       <p>Revolutionizing traditional medicine through technology and AI</p>
     </div>
-
   </div>
 
   <div class="copyright">
     © 2026 Dr. ViKi. All rights reserved.
   </div>
 </footer>
-
 
 <!-- ================= JS ================= -->
 <script>
@@ -209,61 +223,95 @@
       }
     });
   });
+
   function verifyOTP() {
-  document.getElementById("otpModal").style.display = "flex";
-}
-let userPhone = "";
-
-function closeOTP() {
-  document.getElementById("otpModal").style.display = "none";
-}
-
-async function sendOTP() {
-  userPhone = document.getElementById("waNumber").value.trim();
-
-  if (!userPhone) {
-    alert("Please enter WhatsApp number");
-    return;
+    document.getElementById("otpModal").style.display = "flex";
   }
 
-  closeOTP();
+  let userPhone = "";
 
-  try {
-    let sendOTP = await fetch("/api/send-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: userPhone })
-    });
+  function closeOTP() {
+    document.getElementById("otpModal").style.display = "none";
+  }
 
-    let otpResult = await sendOTP.json();
-    if (!otpResult.success) return alert("Failed to send OTP!");
+  async function sendOTP() {
+    userPhone = document.getElementById("waNumber").value.trim();
 
-    let otp = prompt("Enter the OTP received on WhatsApp:");
-
-    let verify = await fetch("/api/verify-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: userPhone, otp })
-    });
-
-    let verifyResult = await verify.json();
-    if (!verifyResult.success) return alert("OTP verification failed!");
-
-    if (verifyResult.registered) {
-      window.location.href = "patient_dashboard.html";
-    } else {
-      window.location.href = "consult1.html";
+    if (!userPhone) {
+      alert("Please enter WhatsApp number");
+      return;
     }
 
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong.");
+    closeOTP();
+
+    try {
+      let sendOTP = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: userPhone })
+      });
+
+      let otpResult = await sendOTP.json();
+      if (!otpResult.success) return alert("Failed to send OTP!");
+
+      let otp = prompt("Enter the OTP received on WhatsApp:");
+
+      let verify = await fetch("/api/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: userPhone, otp })
+      });
+
+      let verifyResult = await verify.json();
+      if (!verifyResult.success) return alert("OTP verification failed!");
+
+      if (verifyResult.registered) {
+        window.location.href = "patient_dashboard.html";
+      } else {
+        window.location.href = "consult1.html";
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong.");
+    }
+  }
+
+  function toggleMenu() {
+  const nav = document.getElementById("navLinks");
+
+  if (nav.classList.contains("active")) {
+    nav.classList.remove("active");
+    document.body.classList.remove("menu-open");
+  } else {
+    nav.classList.add("active");
+    document.body.classList.add("menu-open");
   }
 }
-function toggleMenu() {
-  document.getElementById("navLinks").classList.toggle("active");
-}
+
+// Close mobile menu when a link is clicked
+document.querySelectorAll('#navLinks a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const nav = document.getElementById("navLinks");
+
+    // Only close if menu is open (mobile)
+    if(nav.classList.contains('active')) {
+      nav.classList.remove('active');
+      document.body.classList.remove('menu-open');
+    }
+
+    // Smooth scroll to section
+    const targetId = this.getAttribute('href');
+    if (targetId.startsWith('#')) {
+      e.preventDefault();
+      document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+  
 </script>
+
 <!-- ===== WhatsApp OTP Modal ===== -->
 <div class="otp-modal" id="otpModal">
   <div class="otp-box">
@@ -277,7 +325,5 @@ function toggleMenu() {
   </div>
 </div>
 
-
 </body>
 </html>
-
